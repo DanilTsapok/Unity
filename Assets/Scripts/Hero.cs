@@ -3,9 +3,10 @@ using UnityEngine.UI;
 
 public class Hero : MonoBehaviour
 {
-    [SerializeField] private float speed = 3f;
-    private float lives = 100;
-    [SerializeField] private float jumpForce = 15f;
+    [SerializeField] private float speed;
+    [SerializeField ]private float lives;
+    [SerializeField] private float jumpForce;
+    [SerializeField] private float damage;
     [SerializeField] private LayerMask groundLayer;
 
     [Header("Health UI")]
@@ -18,15 +19,20 @@ public class Hero : MonoBehaviour
 
     public static Hero Instance { get; set; }
 
-  
-    public void GetDamage()
+    public float GetHeroDamage()
     {
-        lives -= 20; 
+        return damage;
+    }
+  
+    public void GetDamage(float EnemyDamage)
+    {
+        lives -= EnemyDamage; 
 
         UpdateHealthUI();
 
         if (lives <= 0)
         {
+            Debug.Log("Dead");
             Destroy(gameObject); 
         }
     }
