@@ -3,11 +3,10 @@ using UnityEngine.UI;
 
 public class Enemy : MonoBehaviour
 {
-    [SerializeField] private float lives;
-    
     [SerializeField] private float speed;
     [SerializeField] private float jumpForce;
     [SerializeField] private float damage;
+    [SerializeField] private float knockbackForce = 5f; // Сила отталкивания врага
     [SerializeField] private Image[] hearts;
     [SerializeField] private Sprite fullHeart;
     [SerializeField] private Sprite emptyHeart;
@@ -17,7 +16,9 @@ public class Enemy : MonoBehaviour
 
     private Vector3 direction;
     private Rigidbody2D rb;
-    private bool facingRight = true; 
+    private bool facingRight = true;
+    private float damageCooldown = 1f;
+    private float lastDamageTime;
 
     private void Start()
     {
@@ -69,12 +70,16 @@ public class Enemy : MonoBehaviour
         transform.localScale = new Vector3(facingRight ? 1 : -1, transform.localScale.y, transform.localScale.z);
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void OnCollisionStay2D(Collision2D collision)
     {
         if (collision.gameObject == Hero.Instance.gameObject)
         {
-            Hero.Instance.GetDamage(damage);
-            TakeDamage(Hero.Instance.GetHeroDamage());
+            if (Time.time - lastDamageTime >= damageCooldown)
+            {
+                Hero.Instance.GetDamage(damage);
+                TakeDamage(Hero.Instance.GetHeroDamage(), collision.transform.position);
+                lastDamageTime = Time.time;
+            }
         }
         else if (collision.contacts[0].normal.y < -0.7f)
         {
@@ -86,17 +91,27 @@ public class Enemy : MonoBehaviour
     {
         if (rb != null)
         {
-            rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce); // Исправлено: `velocity`, а не `linearVelocity`
         }
     }
 
-    private void TakeDamage(float damage)
+    private void TakeDamage(float damage, Vector3 heroPosition)
     {
-        lives -= damage;
+        if (hearts.Length > 0)
+        {
+            int lastIndex = hearts.Length - 1;
+            hearts[lastIndex].enabled = false;
+            Image[] newHearts = new Image[lastIndex];
+            for (int i = 0; i < lastIndex; i++)
+            {
+                newHearts[i] = hearts[i];
+            }
+            hearts = newHearts;
+        }
 
-        UpdateHealthUI();
+        ApplyKnockback(heroPosition);
 
-        if (lives < 0)
+        if (hearts.Length == 0)
         {
             Debug.Log("Enemy is down");
             Destroy(gameObject);
@@ -108,6 +123,15 @@ public class Enemy : MonoBehaviour
         }
     }
 
+    private void ApplyKnockback(Vector3 heroPosition)
+    {
+        if (rb == null) return; // Проверка на null
+
+        Vector2 knockbackDirection = (transform.position - heroPosition).normalized;
+        knockbackDirection.y = 0; // Оставляем только горизонтальный отталкивающий импульс
+        rb.AddForce(knockbackDirection * knockbackForce, ForceMode2D.Impulse);
+    }
+
     private void UpdateHealthUI()
     {
         if (hearts == null || hearts.Length == 0)
@@ -115,11 +139,10 @@ public class Enemy : MonoBehaviour
             return;
         }
 
-        int heartsToDisplay = Mathf.CeilToInt(lives / hearts.Length);
         for (int i = 0; i < hearts.Length; i++)
         {
-            hearts[i].sprite = i < heartsToDisplay ? fullHeart : emptyHeart;
-            hearts[i].enabled = i < hearts.Length;
+            hearts[i].sprite = fullHeart;
+            hearts[i].enabled = true;
         }
     }
 }

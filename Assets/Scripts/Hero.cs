@@ -49,7 +49,7 @@ public class Hero : MonoBehaviour
     private void UpdateHealthUI()
     {
        
-        int heartsToDisplay = Mathf.FloorToInt(lives / 20);
+        float heartsToDisplay = lives / 20;
 
         for (int i = 0; i < hearts.Length; i++)
         {
