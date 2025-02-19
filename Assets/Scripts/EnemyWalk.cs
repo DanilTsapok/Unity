@@ -7,6 +7,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float jumpForce;
     [SerializeField] private float damage;
     [SerializeField] private float knockbackForce = 5f; // Сила отталкивания врага
+    [SerializeField] private float knockbackUpwardForce = 2f; // Вертикальная сила отталкивания
     [SerializeField] private Image[] hearts;
     [SerializeField] private Sprite fullHeart;
     [SerializeField] private Sprite emptyHeart;
@@ -33,7 +34,7 @@ public class Enemy : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("Canvas Prefab не назначен!");
+            return;
         }
     }
 
@@ -125,11 +126,13 @@ public class Enemy : MonoBehaviour
 
     private void ApplyKnockback(Vector3 heroPosition)
     {
-        if (rb == null) return; // Проверка на null
+        if (rb == null) return;
 
-        Vector2 knockbackDirection = (transform.position - heroPosition).normalized;
-        knockbackDirection.y = 0; // Оставляем только горизонтальный отталкивающий импульс
-        rb.AddForce(knockbackDirection * knockbackForce, ForceMode2D.Impulse);
+        Vector2 knockbackDirection = (transform.position - heroPosition).normalized; 
+        knockbackDirection.y = 0.5f; 
+
+        rb.linearVelocity = Vector2.zero; 
+        rb.AddForce(knockbackDirection * knockbackForce + Vector2.up * knockbackUpwardForce, ForceMode2D.Impulse);
     }
 
     private void UpdateHealthUI()
