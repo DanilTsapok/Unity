@@ -9,7 +9,7 @@ public class CameraControllers : MonoBehaviour
     {
         if (!player)
         {
-            player = FindObjectOfType<Hero>().transform;
+            player = FindObjectOfType<UnitRoot>().transform;
         }
     }
 

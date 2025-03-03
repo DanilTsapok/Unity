@@ -6,15 +6,15 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float speed;
     [SerializeField] private float jumpForce;
     [SerializeField] private float damage;
-    [SerializeField] private float knockbackForce = 5f; // Сила отталкивания врага
-    [SerializeField] private float knockbackUpwardForce = 2f; // Вертикальная сила отталкивания
+    [SerializeField] private float knockbackForce = 5f; 
+    [SerializeField] private float knockbackUpwardForce = 2f; 
     [SerializeField] private Image[] hearts;
     [SerializeField] private Sprite fullHeart;
     [SerializeField] private Sprite emptyHeart;
 
     public GameObject canvasPrefab;
     private GameObject canvasInstance;
-
+    public static Enemy Instance { get; private set; }
     private Vector3 direction;
     private Rigidbody2D rb;
     private bool facingRight = true;
@@ -37,10 +37,11 @@ public class Enemy : MonoBehaviour
             return;
         }
     }
+  
 
     private void Update()
     {
-        if (Hero.Instance != null)
+        if (UnitRoot.Instance != null)
         {
             MoveTowardsHero();
         }
@@ -48,7 +49,7 @@ public class Enemy : MonoBehaviour
 
     private void MoveTowardsHero()
     {
-        Vector3 heroPosition = Hero.Instance.transform.position;
+        Vector3 heroPosition = UnitRoot.Instance.transform.position;
         direction = (heroPosition - transform.position).normalized;
         transform.position += direction * speed * Time.deltaTime;
 
@@ -73,12 +74,13 @@ public class Enemy : MonoBehaviour
 
     private void OnCollisionStay2D(Collision2D collision)
     {
-        if (collision.gameObject == Hero.Instance.gameObject)
+        if (collision.gameObject == UnitRoot.Instance.gameObject)
         {
+
             if (Time.time - lastDamageTime >= damageCooldown)
             {
-                Hero.Instance.GetDamage(damage);
-                TakeDamage(Hero.Instance.GetHeroDamage(), collision.transform.position);
+                UnitRoot.Instance.GetDamage(damage);
+                TakeDamage(UnitRoot.Instance.GetHeroDamage(), collision.transform.position);
                 lastDamageTime = Time.time;
             }
         }
