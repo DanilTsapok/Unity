@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -5,21 +6,25 @@ public class Enemy : MonoBehaviour
 {
     [SerializeField] private float speed;
     [SerializeField] private float jumpForce;
-    [SerializeField] private float damage;
-    [SerializeField] private float knockbackForce = 5f; 
-    [SerializeField] private float knockbackUpwardForce = 2f; 
+    [SerializeField] public float damage;
+    [SerializeField] private float knockbackForce = 5f;
+    [SerializeField] private float knockbackUpwardForce = 2f;
     [SerializeField] private Image[] hearts;
     [SerializeField] private Sprite fullHeart;
     [SerializeField] private Sprite emptyHeart;
 
+    public Animator animator;
     public GameObject canvasPrefab;
     private GameObject canvasInstance;
+
     public static Enemy Instance { get; private set; }
+
     private Vector3 direction;
     private Rigidbody2D rb;
     private bool facingRight = true;
     private float damageCooldown = 1f;
     private float lastDamageTime;
+    private bool isDead = false; 
 
     private void Start()
     {
@@ -32,16 +37,21 @@ public class Enemy : MonoBehaviour
             hearts = canvasInstance.GetComponentsInChildren<Image>();
             UpdateHealthUI();
         }
-        else
-        {
-            return;
-        }
     }
-  
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        rb = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
+    }
 
     private void Update()
     {
-        if (UnitRoot.Instance != null)
+        if (!isDead && UnitRoot.Instance != null) 
         {
             MoveTowardsHero();
         }
@@ -49,17 +59,17 @@ public class Enemy : MonoBehaviour
 
     private void MoveTowardsHero()
     {
+        if (isDead) return;
         Vector3 heroPosition = UnitRoot.Instance.transform.position;
         direction = (heroPosition - transform.position).normalized;
         transform.position += direction * speed * Time.deltaTime;
-
+        animator.SetBool("1_Move", true);
         CheckFlip(heroPosition.x);
     }
 
     private void CheckFlip(float heroX)
     {
         bool shouldFaceRight = heroX > transform.position.x;
-
         if (shouldFaceRight == facingRight)
         {
             Flip();
@@ -74,9 +84,11 @@ public class Enemy : MonoBehaviour
 
     private void OnCollisionStay2D(Collision2D collision)
     {
+        if (isDead) return;
+
         if (collision.gameObject == UnitRoot.Instance.gameObject)
         {
-
+            animator.SetBool("2_Attack", true);
             if (Time.time - lastDamageTime >= damageCooldown)
             {
                 UnitRoot.Instance.GetDamage(damage);
@@ -94,11 +106,11 @@ public class Enemy : MonoBehaviour
     {
         if (rb != null)
         {
-            rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce); // Исправлено: `velocity`, а не `linearVelocity`
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
         }
     }
 
-    private void TakeDamage(float damage, Vector3 heroPosition)
+    public void TakeDamage(float damage, Vector3 heroPosition)
     {
         if (hearts.Length > 0)
         {
@@ -114,26 +126,40 @@ public class Enemy : MonoBehaviour
 
         ApplyKnockback(heroPosition);
 
-        if (hearts.Length == 0)
+        if (hearts.Length == 0) 
         {
-            Debug.Log("Enemy is down");
-            Destroy(gameObject);
-
-            if (canvasInstance != null)
-            {
-                Destroy(canvasInstance);
-            }
+            Die();
         }
+    }
+
+    private void Die()
+    {
+        isDead = true; 
+        animator.SetBool("4_Death", true);
+        damage = 0;
+        speed = 0; 
+        rb.linearVelocity = Vector2.zero; 
+
+        if (canvasInstance != null)
+        {
+            Destroy(canvasInstance);
+        }
+        StartCoroutine(DestroyEnemyAfterDelay(1f));
+    }
+
+    private IEnumerator DestroyEnemyAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        Destroy(gameObject);
     }
 
     private void ApplyKnockback(Vector3 heroPosition)
     {
-        if (rb == null) return;
+        if (rb == null || isDead) return; 
 
-        Vector2 knockbackDirection = (transform.position - heroPosition).normalized; 
-        knockbackDirection.y = 0.5f; 
-
-        rb.linearVelocity = Vector2.zero; 
+        Vector2 knockbackDirection = (transform.position - heroPosition).normalized;
+        knockbackDirection.y = 0.5f;
+        rb.linearVelocity = Vector2.zero;
         rb.AddForce(knockbackDirection * knockbackForce + Vector2.up * knockbackUpwardForce, ForceMode2D.Impulse);
     }
 
