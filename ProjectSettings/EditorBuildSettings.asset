@@ -11,6 +11,21 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Defeat.unity
     guid: 04e2f52ba7309cf4db32248dbb20bea6
+  - enabled: 1
+    path: Assets/Scenes/PauseScene.unity
+    guid: c54611b15c736bf45bc287151dce9cf7
+  - enabled: 1
+    path: Assets/Scenes/SettingsScene.unity
+    guid: a39dc47118f5482448908c57da3aa474
+  - enabled: 1
+    path: Assets/Scenes/SaveScene.unity
+    guid: 465fc0ff81e71b04c8329667f4653e8b
+  - enabled: 1
+    path: Assets/Scenes/MainScene.unity
+    guid: fd902a4328f9f4d4dadbcd7d33e9cacc
+  - enabled: 1
+    path: Assets/Scenes/LevelsScene.unity
+    guid: 96c533b3b6856134283d59b51d54d979
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0

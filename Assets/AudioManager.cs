@@ -12,6 +12,24 @@ public class AudioManager : MonoBehaviour
     public AudioClip attack;
     public AudioClip dead;
 
+
+
+    public static AudioManager Instance;
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+
+        }
+    }
+
     private void Start()
     {
         musicSource.clip = background;

@@ -16,14 +16,22 @@ public class ArtifactHeal : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject == UnitRoot.Instance.gameObject)
+        if (collision.gameObject == UnitRoot.Instance?.gameObject)
         {
-            HealthPlus.text = "+" + heal;
-            StartCoroutine(FadeOutDamageText());
+            if (HealthPlus != null)
+            {
+                HealthPlus.text = "+" + heal;
+                StartCoroutine(FadeOutDamageText());
+            }
+
             spriteRenderer.enabled = false;
             Destroy(gameObject);
-            UnitRoot.Instance.lives += 60;
-            UnitRoot.Instance.UpdateHealthUI();
+
+            if (UnitRoot.Instance != null)
+            {
+                UnitRoot.Instance.lives += 60;
+                UnitRoot.Instance.UpdateHealthUI();
+            }
         }
     }
     private IEnumerator FadeOutDamageText()
