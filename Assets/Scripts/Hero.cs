@@ -19,6 +19,7 @@ public class UnitRoot : MonoBehaviour
     [SerializeField] private Sprite fullHeart;
     [SerializeField] private Sprite emptyHeart;
     [SerializeField] private TextMeshProUGUI damageText;
+
     public bool isPaused = false;
     AudioManager audioManager;
 
@@ -26,11 +27,13 @@ public class UnitRoot : MonoBehaviour
     public Rigidbody2D rb;
     private bool isDead = false;
     private bool facingRight = true;
+    public SpriteRenderer leftHandWithWeapon;
+    public SpriteRenderer rightHandWithShield;
 
     private Dictionary<string, KeyCode> keyBindings = new Dictionary<string, KeyCode>();
 
     public static UnitRoot Instance;
-
+    
     private void Awake()
     {
         if (Instance == null)
@@ -183,11 +186,11 @@ public class UnitRoot : MonoBehaviour
         animator.SetBool("1_Move", false);
     }
 
- 
+
     private void Flip()
     {
         facingRight = !facingRight;
-        transform.localScale = new Vector3(facingRight ? 1 : -1, transform.localScale.y, transform.localScale.z);
+        transform.Rotate(0f, 180f, 0f);
     }
 
 

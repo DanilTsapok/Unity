@@ -17,15 +17,15 @@ public class SaveLoadButton : MonoBehaviour
 
     void Start()
     {
-        slot1Info.text = PlayerPrefs.GetString("Hero_Health_Slot1");
+        slot1Info.text = $"X: {PlayerPrefs.GetFloat("Hero_PosX_Slot1", 0):F2} | Y:{PlayerPrefs.GetFloat("Hero_PosY_Slot1", 0):2F}| Hearts: {PlayerPrefs.GetFloat("Hero_Health_Slot1", 0):F2}";
         saveSlot1Button.onClick.AddListener(() => SaveGame(1));
         LoadSlot1Button.onClick.AddListener(() => LoadGame(1));
 
-        slot2Info.text = PlayerPrefs.GetString("Hero_Health_Slot2");
+        slot2Info.text = $"X: {PlayerPrefs.GetFloat("Hero_PosX_Slot2", 0):F2} | Y:{PlayerPrefs.GetFloat("Hero_PosY_Slot2", 0):2F}| Hearts: {PlayerPrefs.GetFloat("Hero_Health_Slot2", 0):F2}";
         saveSlot2Button.onClick.AddListener(() => SaveGame(2));
         LoadSlot2Button.onClick.AddListener(() => LoadGame(2));
 
-        slot3Info.text = PlayerPrefs.GetString("Hero_Health_Slot3");
+        slot3Info.text = $"X: {PlayerPrefs.GetFloat("Hero_PosX_Slot3", 0):F2} | Y:{PlayerPrefs.GetFloat("Hero_PosY_Slot3", 0):2F}| Hearts: {PlayerPrefs.GetFloat("Hero_Health_Slot3", 0):F2}";
         saveSlot3Button.onClick.AddListener(() => SaveGame(3));
         LoadSlot3Button.onClick.AddListener(() => LoadGame(3));
     }
@@ -42,8 +42,7 @@ public class SaveLoadButton : MonoBehaviour
         PlayerPrefs.SetFloat("Hero_PosY_Slot" + slot, UnitRoot.Instance.transform.position.y);
         PlayerPrefs.SetFloat("Hero_PosZ_Slot" + slot, UnitRoot.Instance.transform.position.z);
         PlayerPrefs.SetFloat("Hero_Health_Slot" + slot, UnitRoot.Instance.lives);
-        bool isGravityEnabled = UnitRoot.Instance.rb.gravityScale != 0;
-        PlayerPrefs.SetInt("Hero_Gravity_Slot" + slot, isGravityEnabled ? 1 : 0);
+     
         PlayerPrefs.Save();
         Debug.Log("Game saved to slot " + slot);
     }
@@ -59,14 +58,11 @@ public class SaveLoadButton : MonoBehaviour
             if (UnitRoot.Instance != null)
             {
          
-                UnitRoot.Instance.rb.gravityScale = 0;
+               
 
                 UnitRoot.Instance.transform.position = new Vector3(posX, posY, posZ);
                 UnitRoot.Instance.lives = PlayerPrefs.GetFloat("Hero_Health_Slot" + slot);
 
-         
-                int gravityState = PlayerPrefs.GetInt("Hero_Gravity_Slot" + slot);
-                UnitRoot.Instance.rb.gravityScale = gravityState == 1 ? 1 : 0;
                 Debug.Log("Game loaded from slot " + slot);
                 SceneManager.LoadScene("SampleScene");
             }
