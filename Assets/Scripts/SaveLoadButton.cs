@@ -57,8 +57,6 @@ public class SaveLoadButton : MonoBehaviour
 
             if (UnitRoot.Instance != null)
             {
-         
-               
 
                 UnitRoot.Instance.transform.position = new Vector3(posX, posY, posZ);
                 UnitRoot.Instance.lives = PlayerPrefs.GetFloat("Hero_Health_Slot" + slot);
