@@ -30,6 +30,7 @@ public class Weapon : MonoBehaviour
           if(typeWeapon == "handWeapon")
             {
                 UnitRoot.Instance.leftHandWithWeapon.sprite = weaponSprite;
+                
             }  
            if(typeWeapon == "shieldWeapon")
             {

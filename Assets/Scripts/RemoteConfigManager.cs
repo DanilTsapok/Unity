@@ -62,9 +62,13 @@ public class RemoteConfigsManger : MonoBehaviour
     {
         if (ColorUtility.TryParseHtmlString(backgroundColor, out Color color))
         {
-            spriteRenderer.color = color;  
 
-          
+            if (spriteRenderer != null)  
+            {
+                spriteRenderer.color = color;
+            }
+
+
             if (imageComponent != null)
             {
                 imageComponent.sprite = null; 

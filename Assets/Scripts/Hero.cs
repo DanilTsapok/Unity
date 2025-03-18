@@ -19,7 +19,7 @@ public class UnitRoot : MonoBehaviour
     [SerializeField] private Sprite fullHeart;
     [SerializeField] private Sprite emptyHeart;
     [SerializeField] private TextMeshProUGUI damageText;
-
+    [SerializeField] public GameObject weaponPrint;
     public bool isPaused = false;
     AudioManager audioManager;
 
@@ -29,8 +29,8 @@ public class UnitRoot : MonoBehaviour
     private bool facingRight = true;
     public SpriteRenderer leftHandWithWeapon;
     public SpriteRenderer rightHandWithShield;
-
-    private Dictionary<string, KeyCode> keyBindings = new Dictionary<string, KeyCode>();
+    public float heartsToDisplay;
+  private Dictionary<string, KeyCode> keyBindings = new Dictionary<string, KeyCode>();
 
     public static UnitRoot Instance;
     
@@ -41,11 +41,13 @@ public class UnitRoot : MonoBehaviour
             Instance = this;
             transform.SetParent(null, true);
             DontDestroyOnLoad(gameObject);
+  
         }
         else
         {
             Destroy(gameObject);
         }
+
         rb = GetComponent<Rigidbody2D>();
         if (rb == null)
         {
@@ -63,8 +65,8 @@ public class UnitRoot : MonoBehaviour
         {
             Debug.LogError("AudioManager not found! Make sure it exists in the scene.");
         }
-
         LoadKeyBindings();
+
     }
 
 
@@ -74,7 +76,6 @@ public class UnitRoot : MonoBehaviour
         keyBindings["MoveRight"] = ParseKeyCode(PlayerPrefs.GetString("MoveRightKey", "D"));
         keyBindings["Jump"] = ParseKeyCode(PlayerPrefs.GetString("JumpKey", "Space"));
         keyBindings["Attack"] = ParseKeyCode(PlayerPrefs.GetString("AttackKey", "Mouse0"));
-        keyBindings["Defend"] = ParseKeyCode(PlayerPrefs.GetString("DefendKey", "Mouse1"));
     }
 
     public void UpdateKeyBinding(string action, KeyCode keyCode)
@@ -121,13 +122,15 @@ public class UnitRoot : MonoBehaviour
         lives -= enemyDamage;
         UpdateHealthUI();
         damageText.text = "-" + enemyDamage.ToString();
-
         StartCoroutine(FadeOutDamageText());
         if (lives <= 0)
         {
             Debug.Log("Dead");
             isDead = true;
             animator.SetBool("4_Death", true);
+            audioManager.PlaySFX(audioManager.dead);
+            rb.simulated = false;
+            isPaused = true;
             StartCoroutine(DefeatGame());
         }
     }
@@ -166,13 +169,8 @@ public class UnitRoot : MonoBehaviour
 
     public void UpdateHealthUI()
     {
-        if (hearts == null || hearts.Length == 0)
-        {
-            Debug.LogWarning("Массив hearts не назначен!");
-            return;
-        }
-
-        float heartsToDisplay = lives / 20;
+     
+        heartsToDisplay = Mathf.Clamp(lives / 20, 0, hearts.Length);
 
         for (int i = 0; i < hearts.Length; i++)
         {
@@ -180,10 +178,12 @@ public class UnitRoot : MonoBehaviour
             hearts[i].enabled = i < hearts.Length;
         }
     }
+
     private void Start()
     {
- 
+        weaponPrint.SetActive(false);
         animator.SetBool("1_Move", false);
+       
     }
 
 
@@ -196,10 +196,10 @@ public class UnitRoot : MonoBehaviour
 
     private void Update()
     {
-        Debug.Log(isPaused);
+       
         if (isPaused == true)
         {
-            Debug.Log(isPaused);
+            rb.simulated = false;
             return;
         }
         if (!isDead)
@@ -220,6 +220,7 @@ public class UnitRoot : MonoBehaviour
             if (Input.GetKeyDown(keyBindings["Jump"]))
             {
                 Jump();
+                audioManager.PlaySFX(audioManager.jump);
             }
 
             if (Input.GetKeyDown(keyBindings["Attack"]))
@@ -242,7 +243,7 @@ public class UnitRoot : MonoBehaviour
         Vector3 moveDir = new Vector3(direction, 0, 0);
         transform.position = Vector3.MoveTowards(transform.position, transform.position + moveDir, speed * Time.deltaTime);
         animator.SetBool("1_Move", true);
-
+        weaponPrint.SetActive(false);
         if (direction < 0 && facingRight)
         {
             Flip();
@@ -255,6 +256,7 @@ public class UnitRoot : MonoBehaviour
 
     private void Attack()
     {
+        weaponPrint.SetActive(true);
         animator.SetBool("2_Attack", true);
     }
 

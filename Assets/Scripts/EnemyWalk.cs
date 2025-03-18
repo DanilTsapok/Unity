@@ -85,6 +85,7 @@ public class Enemy : MonoBehaviour
     private void OnCollisionStay2D(Collision2D collision)
     {
         if (isDead) return;
+       
 
         if (collision.gameObject == UnitRoot.Instance.gameObject)
         {
@@ -96,6 +97,7 @@ public class Enemy : MonoBehaviour
                 lastDamageTime = Time.time;
             }
         }
+        
         else if (collision.contacts[0].normal.y < -0.7f)
         {
             Jump();

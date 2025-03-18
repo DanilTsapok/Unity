@@ -20,6 +20,7 @@ public class VolumeSettings : MonoBehaviour
             return;
         }
 
+        UnitRoot.Instance.rb.simulated = false;
         if (PlayerPrefs.HasKey("Music"))
         {
             LoadVolume();

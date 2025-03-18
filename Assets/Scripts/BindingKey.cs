@@ -69,6 +69,8 @@ public class BindingKey : MonoBehaviour
         {
           PlayerPrefs.SetString("AttackKey", attack);
         }
+        //UnitRoot.Instance.isPaused = true;
+        //UnitRoot.Instance.rb.simulated = false;
         PlayerPrefs.Save();
         LoadSavedKeys();
     }

@@ -20,8 +20,9 @@ public class ArtifactHeal : MonoBehaviour
         {
             if (HealthPlus != null)
             {
+                UnitRoot.Instance.UpdateHealthUI();
                 HealthPlus.text = "+" + heal;
-                StartCoroutine(FadeOutDamageText());
+                StartCoroutine(FadeOutHealText());
             }
 
             spriteRenderer.enabled = false;
@@ -29,12 +30,12 @@ public class ArtifactHeal : MonoBehaviour
 
             if (UnitRoot.Instance != null)
             {
-                UnitRoot.Instance.lives += 60;
+                UnitRoot.Instance.lives += heal;
                 UnitRoot.Instance.UpdateHealthUI();
             }
         }
     }
-    private IEnumerator FadeOutDamageText()
+    private IEnumerator FadeOutHealText()
     {
         Color color = HealthPlus.color;
         float duration = 2f;

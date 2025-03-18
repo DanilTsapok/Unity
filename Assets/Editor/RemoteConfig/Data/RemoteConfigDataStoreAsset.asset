@@ -12,6 +12,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 469c24fdb3bd6431b92cc1465bd9166b, type: 3}
   m_Name: RemoteConfigDataStoreAsset
   m_EditorClassIdentifier: 
-  _rsKeyList: '[]'
-  _rsLastCachedKeyList: '[]'
-  _environments: '[]'
+  _rsKeyList: "[\r\n  {\r\n    \"metadata\": {\r\n      \"entityId\": \"0400d8c3-695d-4326-9acd-94adee1d4608\"\r\n   
+    },\r\n    \"rs\": {\r\n      \"key\": \"textColor\",\r\n      \"type\": \"string\",\r\n     
+    \"value\": \"red\"\r\n    }\r\n  },\r\n  {\r\n    \"metadata\": {\r\n      \"entityId\":
+    \"de01d060-4d01-40e0-a404-b70294edb21f\"\r\n    },\r\n    \"rs\": {\r\n     
+    \"key\": \"backgroundColor\",\r\n      \"type\": \"string\",\r\n      \"value\":
+    \"green\"\r\n    }\r\n  }\r\n]"
+  _rsLastCachedKeyList: "[\r\n  {\r\n    \"metadata\": {\r\n      \"entityId\": \"0400d8c3-695d-4326-9acd-94adee1d4608\"\r\n   
+    },\r\n    \"rs\": {\r\n      \"key\": \"textColor\",\r\n      \"type\": \"string\",\r\n     
+    \"value\": \"red\"\r\n    }\r\n  },\r\n  {\r\n    \"metadata\": {\r\n      \"entityId\":
+    \"de01d060-4d01-40e0-a404-b70294edb21f\"\r\n    },\r\n    \"rs\": {\r\n     
+    \"key\": \"backgroundColor\",\r\n      \"type\": \"string\",\r\n      \"value\":
+    \"green\"\r\n    }\r\n  }\r\n]"
+  _environments: "[\r\n  {\r\n    \"projectId\": \"996e1127-18e7-48cd-ade3-f71f8645451a\",\r\n   
+    \"name\": \"production\",\r\n    \"id\": \"ddfe8c71-a3c3-43c2-84e4-5b0071035a07\",\r\n   
+    \"isDefault\": true,\r\n    \"createdAt\": \"2025-02-15T10:51:19Z\",\r\n    \"updatedAt\":
+    \"2025-02-15T10:51:19Z\"\r\n  }\r\n]"
