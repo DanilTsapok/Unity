@@ -3,6 +3,10 @@ using UnityEngine.UI;
 using Unity.RemoteConfig;
 using Unity.Services.RemoteConfig;
 using TMPro;
+using Unity.Services.Core;
+using System;
+using System.Threading.Tasks;
+using Unity.Services.Authentication;
 
 public class RemoteConfigsManger : MonoBehaviour
 {
@@ -16,33 +20,46 @@ public class RemoteConfigsManger : MonoBehaviour
     private string textColor;
     private string backgroundColor;
 
-    void Start()
+    async void Start()
     {
+        if (!UnityServices.State.Equals(ServicesInitializationState.Initialized))
+        {
+            await InitializeUnityServices();
+        }
+
+
         RemoteConfigService.Instance.FetchCompleted += ApplyRemoteConfig;
+
         RemoteConfigService.Instance.FetchConfigs(new userAttributes(), new appAttributes());
+        
+    }
+    private async Task InitializeUnityServices()
+    {
+        await UnityServices.InitializeAsync();
+        if (!AuthenticationService.Instance.IsSignedIn) { 
+        
+        await AuthenticationService.Instance.SignInAnonymouslyAsync();
+
+        }
     }
 
     private void ApplyRemoteConfig(ConfigResponse response)
     {
+        Debug.Log($"Remote Config Response: {response.status}");
+
         if (response.status == ConfigRequestStatus.Success)
         {
-            textColor = RemoteConfigService.Instance.appConfig.GetString("textColor", "red");
-            backgroundColor = RemoteConfigService.Instance.appConfig.GetString("backgroundColor", "green");
+            textColor = RemoteConfigService.Instance.appConfig.GetString("textColor");
+            backgroundColor = RemoteConfigService.Instance.appConfig.GetString("backgroundColor");
 
-            if (string.IsNullOrEmpty(textColor) || string.IsNullOrEmpty(backgroundColor))
-            {
-                Debug.LogWarning("Одно из значений конфигурации пустое.");
-            }
-
-            Debug.Log($"Text Color: {textColor}");
-            Debug.Log($"Background Color: {backgroundColor}");
+            Debug.Log($"Отримання кольору: textColor = {textColor}, backgroundColor = {backgroundColor}");
 
             ChangeTextColor();
             ChangeBackgroundColor();
         }
         else
         {
-            Debug.LogError("Не удалось загрузить конфигурацию.");
+            Debug.LogError("Не вдалось отримати колір");
         }
     }
 
@@ -54,7 +71,7 @@ public class RemoteConfigsManger : MonoBehaviour
         }
         else
         {
-            Debug.LogError("Неверный цвет текста.");
+            Debug.LogError("Не правильний колір тексту");
         }
     }
 
@@ -77,7 +94,7 @@ public class RemoteConfigsManger : MonoBehaviour
         }
         else
         {
-            Debug.LogError("Неверный цвет фона.");
+            Debug.LogError("Не правильний колір фону");
         }
     }
 }

@@ -8,9 +8,9 @@ using System.Collections.Generic;
 
 public class UnitRoot : MonoBehaviour
 {
-    [SerializeField] private float speed;
+    [SerializeField] public float speed;
     [SerializeField] public float lives;
-    [SerializeField] private float jumpForce;
+    [SerializeField] public float jumpForce;
     [SerializeField] public float damage;
     [SerializeField] private LayerMask groundLayer;
 
@@ -30,8 +30,7 @@ public class UnitRoot : MonoBehaviour
     public SpriteRenderer leftHandWithWeapon;
     public SpriteRenderer rightHandWithShield;
     public float heartsToDisplay;
-  private Dictionary<string, KeyCode> keyBindings = new Dictionary<string, KeyCode>();
-
+    private Dictionary<string, KeyCode> keyBindings = new Dictionary<string, KeyCode>();
     public static UnitRoot Instance;
     
     private void Awake()
@@ -76,6 +75,7 @@ public class UnitRoot : MonoBehaviour
         keyBindings["MoveRight"] = ParseKeyCode(PlayerPrefs.GetString("MoveRightKey", "D"));
         keyBindings["Jump"] = ParseKeyCode(PlayerPrefs.GetString("JumpKey", "Space"));
         keyBindings["Attack"] = ParseKeyCode(PlayerPrefs.GetString("AttackKey", "Mouse0"));
+       
     }
 
     public void UpdateKeyBinding(string action, KeyCode keyCode)
@@ -86,16 +86,11 @@ public class UnitRoot : MonoBehaviour
     }
     private KeyCode ParseKeyCode(string key)
     {
-       
         key = key.ToUpper();
-
-
         if (Enum.TryParse(key, out KeyCode result))
         {
             return result;
         }
-
-      
         switch (key)
         {
             case "SPACE":
@@ -183,7 +178,11 @@ public class UnitRoot : MonoBehaviour
     {
         weaponPrint.SetActive(false);
         animator.SetBool("1_Move", false);
-       
+     
+        PlayerPrefs.SetFloat("Hero_PosX_Slot" + 5, transform.position.x);
+        PlayerPrefs.SetFloat("Hero_PosY_Slot" + 5, transform.position.y);
+        PlayerPrefs.SetFloat("Hero_PosZ_Slot" + 5, transform.position.z);
+
     }
 
 
@@ -229,12 +228,10 @@ public class UnitRoot : MonoBehaviour
                 audioManager.PlaySFX(audioManager.attack);
             }
 
-            //if (Input.GetKeyDown(keyBindings["Defend"]))
-            //{
-            //    Defance();
-            //}
+        
         }
     }
+
 
     private void Move(int direction)
     {
@@ -266,5 +263,11 @@ public class UnitRoot : MonoBehaviour
         rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
     }
 
+    //private void Defance()
+    //{
+    //    if (isDead) return;
+    //    Enemy.Instance.damage = 0;
+    //    animator.SetBool("2_Attack", true);
+    //}
    
 }

@@ -10,18 +10,21 @@ public class BindingKey : MonoBehaviour
     public TMP_Text jumpText;
     public TMP_Text attackText;
 
+
     public TMP_InputField moveLeftInput;
     public TMP_InputField moveRightInput;
     public TMP_InputField jumpInput;
     public TMP_InputField attackInput;
 
 
+
     private void Start()
     {
+       
         LoadSavedKeys();
     }
 
-   private void LoadSavedKeys()
+    private void LoadSavedKeys()
 {
     if (moveLeftText != null)
         moveLeftText.text = PlayerPrefs.GetString("MoveLeftKey", "A");
@@ -42,15 +45,19 @@ public class BindingKey : MonoBehaviour
         attackText.text = PlayerPrefs.GetString("AttackKey", "Mouse0");
     else
         Debug.LogWarning("attackText is not assigned!");
+
+ 
 }
 
 
     public void SaveCustomBindings()
     {
+      
         string moveLeft = moveLeftInput.text;
         string moveRight = moveRightInput.text;
         string jump = jumpInput.text;
         string attack = attackInput.text;
+       
 
         if (!string.IsNullOrEmpty(moveLeft))
         {
@@ -69,6 +76,10 @@ public class BindingKey : MonoBehaviour
         {
           PlayerPrefs.SetString("AttackKey", attack);
         }
+        //if (!string.IsNullOrEmpty(defend))
+        //{
+        //  PlayerPrefs.SetString("DefendKey", defend);
+        //}
         //UnitRoot.Instance.isPaused = true;
         //UnitRoot.Instance.rb.simulated = false;
         PlayerPrefs.Save();

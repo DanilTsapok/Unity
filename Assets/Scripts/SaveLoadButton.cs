@@ -59,7 +59,10 @@ public class SaveLoadButton : MonoBehaviour
 
                 UnitRoot.Instance.transform.position = new Vector3(posX, posY, posZ);
                 UnitRoot.Instance.lives = PlayerPrefs.GetFloat("Hero_Health_Slot" + slot);
-             
+                //UnitRoot.Instance.UpdateHealthUI();
+                UnitRoot.Instance.rb.simulated = true;
+                UnitRoot.Instance.isPaused = false;
+                UnitRoot.Instance.gameObject.SetActive(true);
                 Debug.Log("Game loaded from slot " + slot);
                 SceneManager.LoadScene("SampleScene");
             }

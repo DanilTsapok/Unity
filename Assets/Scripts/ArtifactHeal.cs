@@ -6,6 +6,9 @@ public class ArtifactHeal : MonoBehaviour
 
     [SerializeField] private TextMeshProUGUI HealthPlus;
     [SerializeField] private float heal;
+    [SerializeField] private float damage;
+    [SerializeField] private float speed;
+    [SerializeField] private float jumpSpeed;
     private SpriteRenderer spriteRenderer;
 
     void Start()
@@ -18,9 +21,13 @@ public class ArtifactHeal : MonoBehaviour
     {
         if (collision.gameObject == UnitRoot.Instance?.gameObject)
         {
+            UnitRoot.Instance.speed += speed;
+            UnitRoot.Instance.damage += damage;
+            UnitRoot.Instance.jumpForce += jumpSpeed;
             if (HealthPlus != null)
             {
                 UnitRoot.Instance.UpdateHealthUI();
+
                 HealthPlus.text = "+" + heal;
                 StartCoroutine(FadeOutHealText());
             }
