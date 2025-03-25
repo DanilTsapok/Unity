@@ -41,6 +41,9 @@ public class SaveLoadButton : MonoBehaviour
         PlayerPrefs.SetFloat("Hero_PosX_Slot" + slot, UnitRoot.Instance.transform.position.x);
         PlayerPrefs.SetFloat("Hero_PosY_Slot" + slot, UnitRoot.Instance.transform.position.y);
         PlayerPrefs.SetFloat("Hero_PosZ_Slot" + slot, UnitRoot.Instance.transform.position.z);
+        slot1Info.text = $"X: {PlayerPrefs.GetFloat("Hero_PosX_Slot1", 0):F2} | Y: {PlayerPrefs.GetFloat("Hero_PosY_Slot1", 0):F2} | Hearts: {PlayerPrefs.GetFloat("Hero_Health_Slot1", 0):F2}";
+        slot2Info.text = $"X: {PlayerPrefs.GetFloat("Hero_PosX_Slot2", 0):F2} | Y: {PlayerPrefs.GetFloat("Hero_PosY_Slot2", 0):F2} | Hearts: {PlayerPrefs.GetFloat("Hero_Health_Slot2", 0):F2}";
+        slot3Info.text = $"X: {PlayerPrefs.GetFloat("Hero_PosX_Slot3", 0):F2} | Y:{PlayerPrefs.GetFloat("Hero_PosY_Slot3", 0):F2} | Hearts: {PlayerPrefs.GetFloat("Hero_Health_Slot3", 0):F2}";
         PlayerPrefs.SetFloat("Hero_Health_Slot" + slot, UnitRoot.Instance.lives);
         PlayerPrefs.Save();
         Debug.Log("Game saved to slot " + slot);

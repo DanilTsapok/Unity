@@ -65,7 +65,7 @@ public class UnitRoot : MonoBehaviour
             Debug.LogError("AudioManager not found! Make sure it exists in the scene.");
         }
         LoadKeyBindings();
-
+        animator.SetBool("4_Death", false);
     }
 
 
@@ -126,11 +126,11 @@ public class UnitRoot : MonoBehaviour
             audioManager.PlaySFX(audioManager.dead);
             rb.simulated = false;
             isPaused = true;
-            StartCoroutine(DefeatGame());
+            StartCoroutine(DefeatGame(1));
         }
     }
 
-    private IEnumerator DefeatGame()
+    private IEnumerator DefeatGame(int level)
     {
         yield return new WaitForSeconds(1f);
         GetComponent<Collider2D>().enabled = false;
@@ -139,7 +139,7 @@ public class UnitRoot : MonoBehaviour
         {
             spriteRenderer.enabled = false;
         }
-
+        PlayerPrefs.SetString("LevelStatus"+level,"defeat");
         SceneManager.LoadScene("Defeat");
     }
 
@@ -182,7 +182,7 @@ public class UnitRoot : MonoBehaviour
         PlayerPrefs.SetFloat("Hero_PosX_Slot" + 5, transform.position.x);
         PlayerPrefs.SetFloat("Hero_PosY_Slot" + 5, transform.position.y);
         PlayerPrefs.SetFloat("Hero_PosZ_Slot" + 5, transform.position.z);
-
+        animator.SetBool("4_Death", false);
     }
 
 
@@ -263,11 +263,4 @@ public class UnitRoot : MonoBehaviour
         rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
     }
 
-    //private void Defance()
-    //{
-    //    if (isDead) return;
-    //    Enemy.Instance.damage = 0;
-    //    animator.SetBool("2_Attack", true);
-    //}
-   
 }

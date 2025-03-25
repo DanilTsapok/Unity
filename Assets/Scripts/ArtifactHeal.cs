@@ -29,17 +29,16 @@ public class ArtifactHeal : MonoBehaviour
                 UnitRoot.Instance.UpdateHealthUI();
 
                 HealthPlus.text = "+" + heal;
-                StartCoroutine(FadeOutHealText());
+                
             }
-
             spriteRenderer.enabled = false;
             Destroy(gameObject);
-
             if (UnitRoot.Instance != null)
             {
                 UnitRoot.Instance.lives += heal;
-                UnitRoot.Instance.UpdateHealthUI();
+                UnitRoot.Instance.UpdateHealthUI(); 
             }
+            
         }
     }
     private IEnumerator FadeOutHealText()
@@ -60,4 +59,5 @@ public class ArtifactHeal : MonoBehaviour
         color.a = 1;
         HealthPlus.color = color;
     }
+
 }
